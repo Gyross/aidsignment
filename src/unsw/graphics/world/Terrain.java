@@ -55,9 +55,9 @@ public class Terrain {
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
         this.sunlight = sunlight;
-       
-        generateTerrainMesh();
-        generateTreeMesh();
+        
+        
+      
     }
 
     public List<Tree> trees() {
@@ -204,6 +204,8 @@ public class Terrain {
         Shader.setFloat(gl, "phongExp", 16f);
         
         //generate meshes
+        generateTerrainMesh();
+        generateTreeMesh();
         treeMesh.init(gl);
         terrainMesh.init(gl);
         

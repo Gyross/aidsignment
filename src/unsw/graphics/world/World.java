@@ -62,6 +62,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
     public World(Terrain terrain) {
     	super("Assignment 2", 800, 600);
         this.terrain = terrain;
+ 
 
         //create a scene
         scene = new Scene3D();
@@ -70,10 +71,6 @@ public class World extends Application3D implements MouseListener, KeyListener{
         cameraHolder = new SceneObject3D(scene.getRoot());
         camera = new Camera3D(cameraHolder);
         scene.setCamera(camera);
-        
-        //populate the scene
-        MeshSceneObject terrainObj = new MeshSceneObject(terrain.getTerrainMesh(), scene.getRoot());
-        MeshSceneObject treeObj = new MeshSceneObject(terrain.getTreeMesh(), terrainObj);
 
     }
    
@@ -155,8 +152,15 @@ public class World extends Application3D implements MouseListener, KeyListener{
 	public void init(GL3 gl) {
 		getWindow().addMouseListener(this);
 		getWindow().addKeyListener(this);
+		
 		super.init(gl);
 		terrain.init(gl);
+		
+        //populate the scene
+        MeshSceneObject terrainObj = new MeshSceneObject(terrain.getTerrainMesh(), scene.getRoot());
+        MeshSceneObject treeObj = new MeshSceneObject(terrain.getTreeMesh(), terrainObj);
+        terrainObj.setColor(Color.GREEN);
+        treeObj.setColor(Color.RED);
 		
 	}
 	
