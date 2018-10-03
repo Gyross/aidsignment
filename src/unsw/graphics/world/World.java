@@ -41,7 +41,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
     private Point2D myMousePoint = null;
     
     //scale for rotation speed
-    private static final float ROTATION_SCALE = 1f;
+    private static final float ROTATION_SCALE = 1.5f;
     
     //scene tree
     private Scene3D scene;
@@ -56,6 +56,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
     private float dyt = 0;
     private float dxt = 0;
     private float dzt = 0;
+    
+    private float thetaY = 0;
 
     
     //constructor
@@ -90,11 +92,24 @@ public class World extends Application3D implements MouseListener, KeyListener{
 	public void display(GL3 gl) {
 		super.display(gl);
 
+		
 		//move the camera holder
-		cameraHolder.translate(dx/20, dy/20, dz/20);	
-		cameraHolder.rotateX(dxt*ROTATION_SCALE);
+		
+		//calculate translation (to move in the correct direction)
+		float fx = dx*(float) Math.cos(thetaY*Math.PI/180) + dz*(float) Math.sin(thetaY*Math.PI/180);
+		float fz = -dx*(float) Math.sin(thetaY*Math.PI/180) + dz*(float) Math.cos(thetaY*Math.PI/180);
+		
+		cameraHolder.translate(fx/20, dy/20, fz/20);
+		
+		//rotations
+		camera.rotateX(dxt*ROTATION_SCALE);
+		camera.rotateZ(dzt*ROTATION_SCALE);
+		
+		//rotate y whilst keeping track of the angle
 		cameraHolder.rotateY(dyt*ROTATION_SCALE);
-		cameraHolder.rotateZ(dzt*ROTATION_SCALE);
+		thetaY += dyt*ROTATION_SCALE;
+		
+		
 		
 		scene.draw(gl);    
 		
