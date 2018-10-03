@@ -11,22 +11,22 @@ import unsw.graphics.geometry.TriangleMesh;
 public class MeshSceneObject extends SceneObject3D{
 
 	private TriangleMesh mesh;
-
+	private Color surfaceColor;
+	private static final Color default_color = Color.RED;
 	
 	public MeshSceneObject(TriangleMesh meshIn, SceneObject3D parent){		
 		super(parent);
 		mesh = meshIn;
+		surfaceColor = default_color;
 	}
-	/*
-	public MeshSceneObject(TriangleMesh meshIn){		
-		mesh = meshIn;
+
+	public void setColor(Color c){
+		surfaceColor = c;
 	}
-	*/
 	
 	@Override
 	public void drawSelf(GL3 gl, CoordFrame3D frame){
-		Shader.setPenColor(gl, Color.red);
+		Shader.setPenColor(gl, surfaceColor);
 		mesh.draw(gl, frame);
-		System.out.println("drawn");
 	}
 }
