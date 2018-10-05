@@ -282,7 +282,6 @@ public class SceneObject3D {
      */
     public void draw(GL3 gl, CoordFrame3D frame) {
         
-    	System.out.println("drawing");
         //don't draw if it is not showing
         if (!amShowing) {
             return;
@@ -308,7 +307,6 @@ public class SceneObject3D {
         //draw the children of this object recursively
         int n_children = getChildren().size();
         for (int i = 0; i < n_children; i++) {
-        	System.out.println("deeper");
         	getChildren().get(i).draw(gl, transformedFrame);
         }
         	

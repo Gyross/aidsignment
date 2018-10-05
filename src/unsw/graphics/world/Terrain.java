@@ -15,6 +15,7 @@ import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Point3D;
 import unsw.graphics.geometry.TriangleMesh;
+import unsw.graphics.scene.MathUtil;
 import unsw.graphics.scene3D.MeshSceneObject;
 import unsw.graphics.scene3D.SceneObject3D;
 import unsw.graphics.world.meshes.TerrainMeshGenerator;
@@ -36,7 +37,6 @@ public class Terrain {
     private List<Road> roads;
     private Vector3 sunlight;
     
-    private MeshSceneObject terrainSceneObject;
     
     private TriangleMesh treeMesh;
     private TriangleMesh terrainMesh;
@@ -116,13 +116,91 @@ public class Terrain {
      * @return
      */
     public float altitude(float x, float z) {
-        float altitude = 0;
-
-        // TODO: Implement this
         
-        return altitude;
+        //get an x,z coordinate within the terrain
+        float my_x = MathUtil.clamp(x, 0, width-2);
+        float my_z = MathUtil.clamp(z, 0, depth-2);
+        
+        //get the x,z offset within a tile
+        float x_mod = my_x % 1;
+        float z_mod = my_z % 1;
+        
+        
+        //get the tile number
+        int x_int = (int)(my_x - x_mod);
+        int z_int = (int)(my_z - z_mod);
+        
+        //upper half of tile (lower z)
+        if(x_mod < 1 - z_mod){
+        	return triangleInterpolateUpper(
+        			altitudes[x_int][z_int],
+        			altitudes[x_int][z_int+1],
+        			altitudes[x_int+1][z_int], 
+        			altitudes[x_int+1][z_int+1],
+        			x_mod, 
+        			z_mod);
+        }
+        //lower half of tile (greater z)
+        else{
+        	return triangleInterpolateLower(
+         			altitudes[x_int][z_int],
+        			altitudes[x_int][z_int+1],
+        			altitudes[x_int+1][z_int], 
+        			altitudes[x_int+1][z_int+1],
+        			x_mod, 
+        			z_mod);	
+        }       
+    }
+    
+    
+    /**
+     * interpolate the altitude of a point in the lower half of a tile
+     * @param topLeftAlt
+     * @param botLeftAlt
+     * @param topRightAlt
+     * @param x
+     * @param z
+     * @return
+     */
+    private float triangleInterpolateLower(float topLeftAlt, float botLeftAlt, float topRightAlt, float botRightAlt, float x, float z ){
+    	//Vector3 vec1 = new Vector3(0, topLeftAlt - botLeftAlt, 1);
+    	//Vector3 vec2 = new Vector3(1, topRightAlt - botLeftAlt, 0);
+    	//Vector3 base = new Vector3(0, botLeftAlt, 0);
+    	
+    	//due to the orientation of array, going downwards increases z, 
+
+    	//start at base point
+    	float height = botRightAlt;
+    	//translate along the slope of the x direction
+    	height += (botLeftAlt - botRightAlt)*(1-x);
+    	//translate along the slope of the y direction
+    	height += (topRightAlt - botRightAlt)*(1-z);
+    	
+    	return height;
     }
 
+    /**
+     * interpolate the altitude of a point in the lower half of a tile
+     * @param topLeftAlt
+     * @param botLeftAlt
+     * @param topRightAlt
+     * @param x
+     * @param z
+     * @return
+     */
+    private float triangleInterpolateUpper(float topLeftAlt, float botLeftAlt, float topRightAlt, float botRightAlt, float x, float z ){
+    	//Vector3 vec1 = new Vector3(1, botRightAlt - botLeftAlt, 0);
+    	//Vector3 vec2 = new Vector3(1, topRightAlt - botRightAlt, 0);
+    	//Vector3 base = new Vector3(0, botRightAlt, 0);
+    	//start at base point
+    	float height = topLeftAlt;
+    	//translate along the slope of the x direction
+    	height += (topRightAlt - topLeftAlt)*(x);
+    	//translate along the slope of the y direction
+    	height += (botLeftAlt - topLeftAlt)*(z);
+    	
+    	return height;
+    }
     /**
      * Add a tree at the specified (x,z) point. 
      * The tree's y coordinate is calculated from the altitude of the terrain at that point.
@@ -184,8 +262,19 @@ public class Terrain {
     }
     
     
- 
+    public void terrainPlace(SceneObject3D s, float x, float z){
+    	float y = altitude(x, z);
+    	s.setPosition(x, y, z);
+    }
+    
 
+    public void addTrees(SceneObject3D terrain){
+    	for(Tree t : trees){
+    		TreeSceneObject tobj = new TreeSceneObject(getTreeMesh(), terrain);
+    		terrainPlace(tobj, t.getPosition().getX(), t.getPosition().getZ());
+    	}
+    }
+    
     public void init(GL3 gl){
     	
         Shader shader = new Shader(gl, "shaders/vertex_phong.glsl",

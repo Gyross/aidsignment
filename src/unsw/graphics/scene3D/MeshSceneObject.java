@@ -24,6 +24,7 @@ public class MeshSceneObject extends SceneObject3D{
 		surfaceColor = c;
 	}
 	
+	
 	@Override
 	public void drawSelf(GL3 gl, CoordFrame3D frame){
 		Shader.setPenColor(gl, surfaceColor);

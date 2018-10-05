@@ -57,6 +57,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
     private float dxt = 0;
     private float dzt = 0;
     
+    private boolean toggleVert;
+    
     private float thetaY = 0;
 
     
@@ -73,6 +75,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
         cameraHolder = new SceneObject3D(scene.getRoot());
         camera = new Camera3D(cameraHolder);
         scene.setCamera(camera);
+        
+        toggleVert = false;
 
     }
    
@@ -100,6 +104,12 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		float fz = -dx*(float) Math.sin(thetaY*Math.PI/180) + dz*(float) Math.cos(thetaY*Math.PI/180);
 		
 		cameraHolder.translate(fx/20, dy/20, fz/20);
+		float camX = cameraHolder.getPosition().getX();
+		float camZ = cameraHolder.getPosition().getZ();
+		if(!toggleVert) {
+			terrain.terrainPlace(cameraHolder, camX, camZ);
+			cameraHolder.translate(0,2,0);
+		}
 		
 		//rotations
 		camera.rotateX(dxt*ROTATION_SCALE);
@@ -113,9 +123,19 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		
 		scene.draw(gl);    
 		
+		//drawCubes(gl, 5, 0.5f);
+        
+	}
+	@Override
+	public void destroy(GL3 gl) {
+		super.destroy(gl);
+		
+	}
+	
+	private void drawCubes(GL3 gl, int n, float s){
 		//draw some cubes in an n*n*n grid to test the display
         CoordFrame3D frame = CoordFrame3D.identity();
-        int n = 5;
+        
         for(int i = 0; i < n*n*n; i++){
         	if (i == (n+1)/2) continue;
         	int a = (i%n)-(n-1)/2;
@@ -123,15 +143,9 @@ public class World extends Application3D implements MouseListener, KeyListener{
         	int c = (i/(n*n))%n-(n-1)/2;
         	frame = CoordFrame3D.identity() 
         		.translate(3*a, 3*b, 3*c)
-                .scale(0.5f, 0.5f, 0.5f);
+                .scale(s, s, s);
         	drawCube(gl, frame);
         }
-        
-	}
-	@Override
-	public void destroy(GL3 gl) {
-		super.destroy(gl);
-		
 	}
 	
 	private void drawCube(GL3 gl, CoordFrame3D frame) {
@@ -173,10 +187,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		
         //populate the scene
         MeshSceneObject terrainObj = new MeshSceneObject(terrain.getTerrainMesh(), scene.getRoot());
-        MeshSceneObject treeObj = new MeshSceneObject(terrain.getTreeMesh(), terrainObj);
-        terrainObj.setColor(Color.GREEN);
-        treeObj.setColor(Color.RED);
-		
+        terrainObj.setColor(Color.GREEN);  
+        terrain.addTrees(terrainObj);
 	}
 	
 
@@ -238,6 +250,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		
 		case KeyEvent.VK_COMMA:	dzt = 1; 	break;
 		case KeyEvent.VK_PERIOD: dzt = -1;	break;
+		
+		case KeyEvent.VK_0: toggleVert = !toggleVert; 
 		
 		default: break;
 		}
