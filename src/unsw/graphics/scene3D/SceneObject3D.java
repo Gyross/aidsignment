@@ -280,6 +280,46 @@ public class SceneObject3D {
      * 
      * @param gl
      */
+    public void draw(GL3 gl, CoordFrame3D frame, Point3D camGlobCoord, float camGlobLen) {
+        Point3D p = this.getGlobalPosition()
+        		.translate(MathUtil.invert(camGlobCoord).asHomogenous().trim());
+        float len = MathUtil.getSize(p);
+        //don't draw if it is not showing
+        if (!amShowing) {
+            return;
+        }
+        
+        // coordinate frame computation
+        
+        //create a new frame (a copy of the old frame)
+        CoordFrame3D thisFrame = new CoordFrame3D(frame.getMatrix());
+        
+        //transform the copy to the frame of this object
+        CoordFrame3D transformedFrame = thisFrame
+        					.translate(getPosition())
+        					.rotateByFrame(getRotationFrame())
+        					.scale(getScale(), getScale(), getScale());
+        
+        
+        //for objects sufficiently close
+        if(len < camGlobLen){
+        	//draw this object   
+        	drawSelf(gl, transformedFrame);
+        }
+        //draw the children of this object recursively
+        int n_children = getChildren().size();
+        for (int i = 0; i < n_children; i++) {
+        	getChildren().get(i).draw(gl, transformedFrame, camGlobCoord, camGlobLen);
+        }
+        	
+    }
+    
+    /**
+     * Draw the object and all of its descendants recursively.
+     * 
+     * 
+     * @param gl
+     */
     public void draw(GL3 gl, CoordFrame3D frame) {
         
         //don't draw if it is not showing
@@ -311,7 +351,6 @@ public class SceneObject3D {
         }
         	
     }
-
     
     
     

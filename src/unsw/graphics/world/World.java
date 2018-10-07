@@ -15,8 +15,10 @@ import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
 import unsw.graphics.geometry.Point2D;
+import unsw.graphics.geometry.Point3D;
 import unsw.graphics.geometry.TriangleFan3D;
 import unsw.graphics.geometry.TriangleMesh;
+import unsw.graphics.scene.MathUtil;
 import unsw.graphics.scene3D.Camera3D;
 import unsw.graphics.scene3D.MeshSceneObject;
 import unsw.graphics.scene3D.Scene3D;
@@ -31,6 +33,7 @@ import unsw.graphics.scene3D.SceneObject3D;
  * 
  * @author Daniel Iosifidis
  * Added a bunch of stuff ye
+ * @author Andrew Ross
  */
 public class World extends Application3D implements MouseListener, KeyListener{
 
@@ -58,8 +61,11 @@ public class World extends Application3D implements MouseListener, KeyListener{
     private float dzt = 0;
     
     private boolean toggleVert;
+    private boolean toggleSpeed = false;
     
     private float thetaY = 0;
+    
+    private float prespectiveDistance = 200;
 
     
     //constructor
@@ -76,7 +82,12 @@ public class World extends Application3D implements MouseListener, KeyListener{
         camera = new Camera3D(cameraHolder);
         scene.setCamera(camera);
         
+        //rotate
+		cameraHolder.rotateY(225);
+		thetaY = MathUtil.normaliseAngle(thetaY + 225);
+        
         toggleVert = false;
+                
 
     }
    
@@ -95,15 +106,23 @@ public class World extends Application3D implements MouseListener, KeyListener{
 	@Override
 	public void display(GL3 gl) {
 		super.display(gl);
-
+		
+		float speed = toggleSpeed ? 4 : 1;
 		
 		//move the camera holder
+		boolean primitive_movement = true;
+		if (primitive_movement){
+			dz = -dxt;
+			dx = 0;
+		}
 		
 		//calculate translation (to move in the correct direction)
 		float fx = dx*(float) Math.cos(thetaY*Math.PI/180) + dz*(float) Math.sin(thetaY*Math.PI/180);
 		float fz = -dx*(float) Math.sin(thetaY*Math.PI/180) + dz*(float) Math.cos(thetaY*Math.PI/180);
 		
-		cameraHolder.translate(fx/20, dy/20, fz/20);
+		
+		
+		cameraHolder.translate(fx*speed/20, dy*speed/20, fz*speed/20);
 		float camX = cameraHolder.getPosition().getX();
 		float camZ = cameraHolder.getPosition().getZ();
 		if(!toggleVert) {
@@ -112,16 +131,17 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		}
 		
 		//rotations
-		camera.rotateX(dxt*ROTATION_SCALE);
-		camera.rotateZ(dzt*ROTATION_SCALE);
-		
+		if(!primitive_movement){
+		camera.rotateX(dxt*ROTATION_SCALE*speed);
+		camera.rotateZ(dzt*ROTATION_SCALE*speed);
+		}
 		//rotate y whilst keeping track of the angle
-		cameraHolder.rotateY(dyt*ROTATION_SCALE);
-		thetaY += dyt*ROTATION_SCALE;
+		cameraHolder.rotateY(dyt*ROTATION_SCALE*speed);
+		thetaY = MathUtil.normaliseAngle(dyt*ROTATION_SCALE*speed + thetaY);
 		
 		
 		
-		scene.draw(gl);    
+		scene.draw(gl, camera.getGlobalPosition(), prespectiveDistance);    
 		
 		//drawCubes(gl, 5, 0.5f);
         
@@ -179,6 +199,10 @@ public class World extends Application3D implements MouseListener, KeyListener{
 	
 	@Override
 	public void init(GL3 gl) {
+		
+		Shader shader = null;
+		shader = new Shader(gl, "shaders/vertex_phong.glsl",
+                "shaders/fragment_phong_sun.glsl");
 		getWindow().addMouseListener(this);
 		getWindow().addKeyListener(this);
 		
@@ -251,7 +275,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		case KeyEvent.VK_COMMA:	dzt = 1; 	break;
 		case KeyEvent.VK_PERIOD: dzt = -1;	break;
 		
-		case KeyEvent.VK_0: toggleVert = !toggleVert; 
+		case KeyEvent.VK_0: toggleVert = !toggleVert; break; 
+		case KeyEvent.VK_9: toggleSpeed = !toggleSpeed; break; 
 		
 		default: break;
 		}

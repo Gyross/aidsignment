@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame2D;
 import unsw.graphics.CoordFrame3D;
+import unsw.graphics.geometry.Point3D;
 import unsw.graphics.scene.Camera;
 import unsw.graphics.scene.SceneObject;
 
@@ -38,6 +39,7 @@ public class Scene3D {
         myTime = System.currentTimeMillis();
         myCamera = new Camera3D(root);
     }
+    
 
 
     public void draw(GL3 gl) {
@@ -51,6 +53,21 @@ public class Scene3D {
         // draw the scene tree
         root.draw(gl, CoordFrame3D.identity());        
     }
+    
+    public void draw(GL3 gl, Point3D camGlobCoord, float camGlobLen) {
+
+        // set the view matrix based on the camera position
+        myCamera.setView(gl); 
+        
+        // update the objects
+        update();
+
+        // draw the scene tree
+        root.draw(gl, CoordFrame3D.identity(), camGlobCoord, camGlobLen);        
+    }
+    
+    
+    
 
     private void update() {
         

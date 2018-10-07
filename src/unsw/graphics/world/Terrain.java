@@ -56,7 +56,7 @@ public class Terrain {
         roads = new ArrayList<Road>();
         this.sunlight = sunlight;
         
-        
+        System.out.println(sunlight);
       
     }
 
@@ -272,24 +272,36 @@ public class Terrain {
     	for(Tree t : trees){
     		TreeSceneObject tobj = new TreeSceneObject(getTreeMesh(), terrain);
     		terrainPlace(tobj, t.getPosition().getX(), t.getPosition().getZ());
+    		
+    		float max = 2.3f;
+    		float min = 0.3f;
+    		float s = (float) ((max - min)*Math.random() + min);
+    		tobj.scale(s);
     	}
     }
     
     public void init(GL3 gl){
-    	
-        Shader shader = new Shader(gl, "shaders/vertex_phong.glsl",
+    	boolean sun = true;
+    	Shader shader = null;
+    	if(sun)
+    		shader = new Shader(gl, "shaders/vertex_phong_sun.glsl",
+                    "shaders/fragment_phong_sun.glsl");
+    	else
+    		shader = new Shader(gl, "shaders/vertex_phong.glsl",
                 "shaders/fragment_phong.glsl");
         shader.use(gl);
         
+        
         // Set the lighting properties
-        Shader.setPoint3D(gl, "lightPos", new Point3D(0, 0, 5));
+        Shader.setPoint3D(gl, "lightVec", this.getSunlight().asPoint3D());
+        Shader.setPoint3D(gl, "lightPos", new Point3D(0,0,5));
         Shader.setColor(gl, "lightIntensity", Color.WHITE);
-        Shader.setColor(gl, "ambientIntensity", new Color(0.2f, 0.2f, 0.2f));
+        Shader.setColor(gl, "ambientIntensity", new Color(0.3f, 0.3f, 0.3f));
         
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
-        Shader.setColor(gl, "diffuseCoeff", new Color(0.5f, 0.5f, 0.5f));
-        Shader.setColor(gl, "specularCoeff", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setColor(gl, "diffuseCoeff", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setColor(gl, "specularCoeff", new Color(0.1f, 0.1f, 0.1f));
         Shader.setFloat(gl, "phongExp", 16f);
         
         //generate meshes
