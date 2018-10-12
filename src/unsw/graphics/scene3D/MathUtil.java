@@ -1,4 +1,4 @@
-package unsw.graphics.scene;
+package unsw.graphics.scene3D;
 
 import unsw.graphics.Vector3;
 import unsw.graphics.Vector4;

@@ -2,10 +2,36 @@ package unsw.graphics.world.meshes;
 
 import java.util.ArrayList;
 
+import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point3D;
+import unsw.graphics.geometry.TriangleMesh;
 
 public class TerrainMeshGenerator {
 
+	
+	//todo: texturing
+	
+	/**
+	 * Method that generates the terrain mesh based off a vertices and indicies list
+	 * these lists are built off terrain parameters
+	 * 
+	 * @note need to handle texturing here
+	 * 
+	 * @param width
+	 * @param height
+	 * @param altitudes
+	 * @return
+	 */
+	public static TriangleMesh generateTerrainMesh(int width, int height, float[][] altitudes){
+		ArrayList<Point3D> vertices = generateVertexList(width, height, altitudes);
+		ArrayList<Integer> indicies = generateIndiciesList(width, height);
+		//todo: texture stuff
+		
+		return new TriangleMesh(vertices, indicies, true);
+	}
+	
+	
+	
 	/**
 	 * Method to generate a list of vertices from the altitudes data for the terrain
 	 * @param width
@@ -15,13 +41,6 @@ public class TerrainMeshGenerator {
 	 */
 	public static ArrayList<Point3D> generateVertexList(int width, int height, float[][] altitudes){
 		//prevent trivial error
-		
-        for(int i=0; i< width; i++){
-        	for(int j=0; j<width; j++){
-        		System.out.println("altitudes[" + i +"][" + j +"] = " + altitudes[i][j]);
-        	}
-        }
-		
 		if(height == 0 || width == 0) return null;
 		
 		//space coordinates
@@ -44,7 +63,6 @@ public class TerrainMeshGenerator {
 			Point3D p = new Point3D(x, y, z);
 			
 			//add the point to the list
-			System.out.println("POINT: " + p.getX()+","+p.getY()+","+p.getZ());
 			vertices.add(p);
 		}
 		return vertices;
@@ -81,7 +99,6 @@ public class TerrainMeshGenerator {
 				indicies.add(i);
 				indicies.add(i+width);
 				indicies.add(i+1);
-				System.out.println("INDICES: " + i+","+(i+width)+","+(i+1));
 			}
 	
 			//prevent overflowing (trying to create a triangle that doesn't exist)
@@ -90,12 +107,44 @@ public class TerrainMeshGenerator {
 				indicies.add(i);
 				indicies.add(i+1);
 				indicies.add(i+1-width);
-				System.out.println("INDICES: " + i+","+(i+1)+","+(i+1-width));
 			}
 		}
 		return indicies;
 	}
 	
+	
+	/**
+	 * Method to generate the surface normals for a mesh
+	 * 
+	 * This method is redundant
+	 * @param indicies
+	 * @param vertices
+	 * @return
+	 */
+	public static ArrayList<Vector3> generateNormalList(ArrayList<Integer> indicies, ArrayList<Point3D> vertices){
+		ArrayList<Vector3> normals = new ArrayList<Vector3>();
+		int size = indicies.size();
+		size = size/3;
+		for(int j = 0; j<3; j++)
+		for(int i = 0; i<size; i++){
+			
+			int i0 = indicies.get(i);
+			int i1 = indicies.get(i+1);
+			int i2 = indicies.get(i+2);
+			
+			Point3D p0 = vertices.get(i0);
+			Point3D p1 = vertices.get(i1);
+			Point3D p2 = vertices.get(i2);
+			
+			Vector3 v1 = p1.minus(p0);
+			Vector3 v2 = p2.minus(p0);
+
+			Vector3 n = v1.cross(v2).normalize();
+			normals.add(n);
+		}
+
+		return normals;
+	}
 	
 	
 	

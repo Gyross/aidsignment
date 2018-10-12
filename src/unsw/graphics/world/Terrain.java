@@ -10,6 +10,7 @@ import java.util.List;
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame3D;
+import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point2D;
@@ -18,6 +19,7 @@ import unsw.graphics.geometry.TriangleMesh;
 import unsw.graphics.scene.MathUtil;
 import unsw.graphics.scene3D.MeshSceneObject;
 import unsw.graphics.scene3D.SceneObject3D;
+import unsw.graphics.world.meshes.PlayerMeshGenerator;
 import unsw.graphics.world.meshes.TerrainMeshGenerator;
 import unsw.graphics.world.meshes.TreeMeshGenerator;
 
@@ -40,6 +42,7 @@ public class Terrain {
     
     private TriangleMesh treeMesh;
     private TriangleMesh terrainMesh;
+    private TriangleMesh playerMesh;
     
 
     /**
@@ -55,9 +58,7 @@ public class Terrain {
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
         this.sunlight = sunlight;
-        
-        System.out.println(sunlight);
-      
+              
     }
 
     public List<Tree> trees() {
@@ -238,7 +239,10 @@ public class Terrain {
     private void generateTerrainMesh(){
     	ArrayList<Point3D> vertices = TerrainMeshGenerator.generateVertexList(width, depth, altitudes);
     	ArrayList<Integer> indicies = TerrainMeshGenerator.generateIndiciesList(width, depth);
+    	ArrayList<Vector3> normals = TerrainMeshGenerator.generateNormalList(indicies, vertices);
     	terrainMesh = new TriangleMesh(vertices, indicies, true);
+    	//terrainMesh = new TriangleMesh(vertices, true);
+
     }
     
     /**
@@ -253,12 +257,26 @@ public class Terrain {
     	}
     }
     
+    /**
+     * Generates the player mesh, storing the mesh in the terrain object
+     */
+    private void generatePlayerMesh(){
+    	try{
+    		playerMesh = PlayerMeshGenerator.generateBasicPlayerMesh();
+    	}
+	    catch (IOException e){
+    		System.out.println("Your player file doesnt exist");
+    	}
+    }
     
     public TriangleMesh getTreeMesh(){
     	return treeMesh;
     }
     public TriangleMesh getTerrainMesh(){
     	return terrainMesh;
+    }
+    public TriangleMesh getPlayerMesh(){
+    	return playerMesh;
     }
     
     
@@ -280,35 +298,34 @@ public class Terrain {
     	}
     }
     
+    public void addRoads(SceneObject3D terrain){
+    	for(Road r : roads){
+    		RoadSceneObject robj = new RoadSceneObject(r, this, terrain);
+    	}
+    }
+    
+    /**
+     * Method that rotates the sunlight updating the value stored
+     * @param gl
+     * @param deg
+     */
+	public void rotateSunlight(float deg){
+	    	Point3D sunvec = (Matrix4.rotationZ(deg).multiply(this.getSunlight().extend())).asPoint3D();
+	    	Vector3 s = sunvec.asHomogenous().trim();
+	    	s = s.normalize();
+	    	this.setSunlightDir(s.getX(), s.getY(), s.getZ());
+	 }
+	 
     public void init(GL3 gl){
-    	boolean sun = true;
-    	Shader shader = null;
-    	if(sun)
-    		shader = new Shader(gl, "shaders/vertex_phong_sun.glsl",
-                    "shaders/fragment_phong_sun.glsl");
-    	else
-    		shader = new Shader(gl, "shaders/vertex_phong.glsl",
-                "shaders/fragment_phong.glsl");
-        shader.use(gl);
-        
-        
-        // Set the lighting properties
-        Shader.setPoint3D(gl, "lightVec", this.getSunlight().asPoint3D());
-        Shader.setPoint3D(gl, "lightPos", new Point3D(0,0,5));
-        Shader.setColor(gl, "lightIntensity", Color.WHITE);
-        Shader.setColor(gl, "ambientIntensity", new Color(0.3f, 0.3f, 0.3f));
-        
-        // Set the material properties
-        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
-        Shader.setColor(gl, "diffuseCoeff", new Color(0.8f, 0.8f, 0.8f));
-        Shader.setColor(gl, "specularCoeff", new Color(0.1f, 0.1f, 0.1f));
-        Shader.setFloat(gl, "phongExp", 16f);
-        
+
         //generate meshes
         generateTerrainMesh();
         generateTreeMesh();
+        generatePlayerMesh();
+        
         treeMesh.init(gl);
         terrainMesh.init(gl);
+        playerMesh.init(gl);
         
         
     }

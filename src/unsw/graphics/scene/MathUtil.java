@@ -2,6 +2,7 @@ package unsw.graphics.scene;
 
 import unsw.graphics.Vector3;
 import unsw.graphics.Vector4;
+import unsw.graphics.geometry.Point3D;
 
 /**
  * A collection of useful math methods 
@@ -155,6 +156,21 @@ public class MathUtil {
     	else 				{ angleRad = (float) 0; }
     	
     	return (float)((angleRad*180)/Math.PI);  	
+    }
+    
+    public static Point3D invert(Point3D p){
+       	float x = -p.getX();
+    	float y = -p.getY();
+    	float z = -p.getZ();
+    	return new Point3D(x,y,z);
+    }
+    
+    public static float getSize(Point3D p){
+    	float x = p.getX();
+    	float y = p.getY();
+    	float z = p.getZ();
+    	
+    	return (float) (Math.sqrt(x*x +y*y +z*z));
     }
     
     

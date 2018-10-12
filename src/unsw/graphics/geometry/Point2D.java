@@ -93,5 +93,10 @@ public class Point2D {
     public Vector3 asHomogenous() {
         return new Vector3(new float[] {x, y, 1});
     }
+    
+    
+    public void print(){
+    	System.out.println("Point: " + x + ", " + y);
+    }
 
 }

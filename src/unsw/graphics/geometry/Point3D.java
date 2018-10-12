@@ -119,5 +119,10 @@ public class Point3D {
     public Vector3 minus(Point3D p) {
         return asHomogenous().minus(p.asHomogenous()).trim();
     }
+    
+    
+    public void print(){
+    	System.out.println("Point: " + x + ", " + y + ", " + z);
+    }
 
 }
