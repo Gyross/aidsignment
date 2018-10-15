@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
+import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
 import unsw.graphics.Vector4;
 import unsw.graphics.geometry.Point3D;
@@ -340,7 +341,7 @@ public class SceneObject3D {
         
         
         // drawing
-        
+
         //draw this object   
         drawSelf(gl, transformedFrame);
         

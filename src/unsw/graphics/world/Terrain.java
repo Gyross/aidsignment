@@ -291,6 +291,10 @@ public class Terrain {
     		TreeSceneObject tobj = new TreeSceneObject(getTreeMesh(), terrain);
     		terrainPlace(tobj, t.getPosition().getX(), t.getPosition().getZ());
     		
+    		tobj.setAmbientColor(new Color(0.05f, 0.05f, 0.05f));
+    		tobj.setDiffuseColor(new Color(0.6f, 0.6f, 0.6f));
+    		tobj.setSpecularColor(new Color(0.01f, 0.01f, 0.01f));
+    		
     		float max = 2.3f;
     		float min = 0.3f;
     		float s = (float) ((max - min)*Math.random() + min);

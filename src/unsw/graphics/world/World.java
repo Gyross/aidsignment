@@ -84,35 +84,40 @@ public class World extends Application3D implements MouseListener, KeyListener{
     }
    
     
-    private void createScene(){
+    private void createScene(GL3 gl){
         //add terrain object
         MeshSceneObject terrainObj = new MeshSceneObject(
         		terrain.getTerrainMesh(), scene.getRoot());
         
 		terrainObj.setColor(Color.GREEN);  
-		terrainObj.setAmbientColor(new Color(0.2f, 0.2f, 0.2f));
+		terrainObj.setAmbientColor(new Color(0.1f, 0.1f, 0.1f));
 		terrainObj.setDiffuseColor(new Color(0.8f, 0.8f, 0.8f));
 		terrainObj.setSpecularColor(new Color(0.1f, 0.1f, 0.1f));
-		
         terrain.addTrees(terrainObj);
         terrain.addRoads(terrainObj);
 
+        terrain.rotateSunlight(90);
+ 
+        
         //add player object
         MeshSceneObject playerObj = new MeshSceneObject(
         		terrain.getPlayerMesh(), playerObject);
         
         playerObj.setColor(Color.blue);  
         playerObj.scale(3);
+        
+        
+        MeshSceneObject skyBox = new MeshSceneObject(
+        		WorldTestObjects.genSkyBox(gl, 20, 20, 40),scene.getRoot());
+        skyBox.setColor(new Color(0.4f, 0.4f, 1));
+        skyBox.setAmbientColor(new Color(0.3f, 0.3f, 0.4f));
+        skyBox.setDiffuseColor(new Color(0.2f, 0.6f, 0.8f));
+        skyBox.setSpecularColor(new Color(0, 0, 0));
+        skyBox.setParent(cameraHolderOuter);
+        
     }
     
-    /**
-     * Method to initialise the lighting to the desired parameters
-     */
-    private void initLightingColor(){	
-    	lighting.setLightVector(terrain.getSunlight().asPoint3D());
-    	lighting.setAmbientInt(new Color(0.7f, 0.7f, 0.7f));
-    	lighting.setLightInt(Color.WHITE);	
-    }
+
     
     
     /**
@@ -131,9 +136,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 	public void display(GL3 gl) {
 		super.display(gl);
 		
-		//update sunlight
-		terrain.rotateSunlight(1f);
-		lighting.updateSunlightLighting(gl, terrain.getSunlight().asPoint3D());
+		
+		
 		
 		//rotate and move the camera
 		pc.rotateCamera();
@@ -144,6 +148,12 @@ public class World extends Application3D implements MouseListener, KeyListener{
 				cameraHolderOuter.getPosition().getX(),
 				cameraHolderOuter.getPosition().getZ()
 		));
+		
+		//update sunlight
+		terrain.rotateSunlight(1f);
+		//update positional lighting
+		lighting.updateLightPos(camera.getGlobalPosition());
+		lighting.updateSunlightLighting(gl, terrain.getSunlight().asPoint3D());
 		
 		
 		//scene.draw(gl, camera.getGlobalPosition(), perspectiveDistance);    
@@ -166,10 +176,10 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		super.init(gl);
 		terrain.init(gl);
 		
-		this.initLightingColor();
+		lighting.initLightingColor(this.terrain);
 		lighting.initLighting(gl);
 		
-        createScene();
+        createScene(gl);
 	}
 	
 

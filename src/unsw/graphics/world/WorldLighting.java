@@ -8,6 +8,7 @@ import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point3D;
+import unsw.graphics.scene3D.SceneObject3D;
 
 public class WorldLighting {
 	//defaults
@@ -16,6 +17,7 @@ public class WorldLighting {
 	private static final Point3D default_point = new Point3D(0,0,1);
 	private static final Point3D default_dir = new Point3D(0,0,1);
 	private static final Color default_intensity = Color.white;
+	
 	
 	private Shader shader;
 	
@@ -27,7 +29,9 @@ public class WorldLighting {
 	//lighting variables
 	private Point3D lightVec = default_dir;
 	private Point3D lightPos = default_point;
+	private Point3D cameraDir = default_point;
 	
+	private Color sunLightIntensity = default_intensity;
 	private Color lightIntensity = default_intensity;
 	private Color AmbientIntensity = default_intensity;
 	
@@ -63,11 +67,14 @@ public class WorldLighting {
         // Set the lighting properties
         Shader.setPoint3D(gl, "lightVec", lightVec);
         Shader.setPoint3D(gl, "lightPos", lightPos);
+        Shader.setPoint3D(gl, "cameraDir", cameraDir);
         Shader.setColor(gl, "ambientIntensity", AmbientIntensity);
         Shader.setColor(gl, "lightIntensity", lightIntensity);
+        Shader.setColor(gl, "sunLightIntensity", sunLightIntensity);
+        
 	}
 	
-	//property setters
+	//property settersq
 	public void setLightVector(Point3D p){
 		lightVec = p;
 	}
@@ -80,6 +87,9 @@ public class WorldLighting {
 	public void setLightInt(Color c){
 		lightIntensity = c;
 	}
+	public void setSunLightInt(Color c){
+		sunLightIntensity = c;
+	}
 	
 	/**
 	 * updates the sunlight lighting
@@ -88,13 +98,36 @@ public class WorldLighting {
 	 * @param dir
 	 */
 	public void updateSunlightLighting(GL3 gl, Point3D dir){	
-		//float intensity = this.getSunlight().dotp(new Vector3(0,1,0));
-	    //if(intensity < 0.2) intensity = 0.2f;
-		//this.setLightInt(intensity,intensity,intensity);
-		 
+		float intensity = dir.asHomogenous().trim().dotp(new Vector3(0,1,0));
+	    if(intensity < 0) intensity = 0.f;
+		this.setSunLightInt(new Color(intensity, intensity, intensity));
+
 		this.setLightVector(dir);
 	    this.updateWorldLighting(gl);
 	    	
 	 }
 	
+    /**
+     * Method to initialise the lighting to the desired parameters
+     */
+    public void initLightingColor(Terrain terrain){	
+    	this.setLightVector(terrain.getSunlight().asPoint3D());
+    	this.setAmbientInt(new Color(0.7f, 0.7f, 0.7f));
+    	this.setSunLightInt(Color.WHITE);
+    	this.setLightInt(Color.WHITE);	
+    }
+
+
+	public void updateLightPos(Point3D position) {
+		this.setLightPos(position);
+	}
+	/*
+	public void giveCameraDirection(SceneObject3D camera){
+		SceneObject3D off = new SceneObject3D(camera);
+		off.translate(-1, 0, 0);
+		cameraDir = off.getGlobalPosition();
+		off.destroy();
+		
+	}
+	*/
 }

@@ -18,14 +18,33 @@ public class TreeSceneObject extends SceneObject3D {
 		
 	}
 	
+	
+	//shader colouring parameters setters
+		public void setColor(Color c){ treeBase.setColor(c); }
+		
+		public void setAmbientColor(Color c){ treeBase.setAmbientColor(c); }
+		public void setDiffuseColor(Color c){ treeBase.setDiffuseColor(c); }
+		public void setSpecularColor(Color c){ treeBase.setSpecularColor(c); }
+		
+		public void setPhongExp(float phexp){ treeBase.setPhongExp(phexp); }
+		
+		
+		//shader colouring parameters setters
+		/*
+		protected Color getColor(){ return surfaceColor; }
+		
+		protected Color getAmbientColor(){ return meshAmbientCoeff; }
+		protected Color getDiffuseColor(){ return meshDiffuseCoeff; }
+		protected Color getSpecularColor(){ return meshSpecularCoeff; }
+		
+		protected float getPhongExp(){ return meshPhongExp; }
+		*/
+	
 	public void initTree(){
 		treeBase.translate(0f, 2.4f, 0.3f);
 		treeBase.scale(1/2f);
 		
 	}
 	
-	public void setColor(Color c){
-		treeBase.setColor(c);
-	}
 	
 }

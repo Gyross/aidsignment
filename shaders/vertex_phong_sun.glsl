@@ -31,4 +31,6 @@ void main() {
 
     // Compute the normal in view coordinates
     m = normalize(view_matrix*model_matrix * vec4(normal, 0)).xyz;
+
+	
 }
