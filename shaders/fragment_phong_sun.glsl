@@ -8,7 +8,7 @@ uniform mat4 view_matrix;
 // Light properties
 uniform vec3 lightVec;
 uniform vec3 lightPos;
-uniform vec3 cameraDir;
+
 uniform vec3 lightIntensity;
 uniform vec3 sunLightIntensity;
 uniform vec3 ambientIntensity;
@@ -18,6 +18,7 @@ uniform vec3 ambientCoeff;
 uniform vec3 diffuseCoeff;
 uniform vec3 specularCoeff;
 uniform float phongExp;
+
 
 in vec4 viewPosition;
 in vec3 m;
@@ -61,9 +62,9 @@ void main()
 
     vec3 intensity1 = ambient + diffuse_sun + specular_sun;
 	vec3 intensity2 = diffuse_light + specular_light;
-	//vec3 intensity1 = vec3(0,0,0);
+
 	intensity2 = intensity2 * min(1, 100/( pow(dot(s,s),1) ));
-	intensity2 = intensity2 * pow(max(dot(v, vec3(0,0,1)), 0), 10);
+	intensity2 = intensity2 * (2*pow(max(dot(v, vec3(0,0,1)), 0), 10) + 0.2);
 
 	vec3 intensity = min(intensity1 + intensity2, 1);
 

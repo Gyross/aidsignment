@@ -96,7 +96,6 @@ public class World extends Application3D implements MouseListener, KeyListener{
         terrain.addTrees(terrainObj);
         terrain.addRoads(terrainObj);
 
-        terrain.rotateSunlight(90);
  
         
         //add player object
@@ -108,7 +107,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
         
         
         MeshSceneObject skyBox = new MeshSceneObject(
-        		WorldTestObjects.genSkyBox(gl, 20, 20, 40),scene.getRoot());
+        		WorldTestObjects.genSkyBox(gl, 80, 80, 160),scene.getRoot());
         skyBox.setColor(new Color(0.4f, 0.4f, 1));
         skyBox.setAmbientColor(new Color(0.3f, 0.3f, 0.4f));
         skyBox.setDiffuseColor(new Color(0.2f, 0.6f, 0.8f));
@@ -150,7 +149,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		));
 		
 		//update sunlight
-		terrain.rotateSunlight(1f);
+		terrain.rotateSunlight(0.1f);
+
 		//update positional lighting
 		lighting.updateLightPos(camera.getGlobalPosition());
 		lighting.updateSunlightLighting(gl, terrain.getSunlight().asPoint3D());
@@ -247,6 +247,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		case KeyEvent.VK_0: pc.num0press(); break; 
 		case KeyEvent.VK_9: pc.num9press(); break; 
 		case KeyEvent.VK_1: pc.num1press(); break; 
+		case KeyEvent.VK_2: pc.num2press(); break; 
+		case KeyEvent.VK_3: terrain.rotateSunlight(45); break;
 		
 		//window quitting function
 		case KeyEvent.VK_Q: this.getWindow().destroy();

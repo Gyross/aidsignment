@@ -54,7 +54,7 @@ public class MeshSceneObject extends SceneObject3D{
 	protected Color getSpecularColor(){ return meshSpecularCoeff; }
 	
 	protected float getPhongExp(){ return meshPhongExp; }
-	
+
 	
 	@Override
 	public void drawSelf(GL3 gl, CoordFrame3D frame){

@@ -3,6 +3,7 @@ package unsw.graphics.world.player;
 import unsw.graphics.scene.MathUtil;
 import unsw.graphics.scene3D.Camera3D;
 import unsw.graphics.scene3D.SceneObject3D;
+import unsw.graphics.world.WorldLighting;
 
 public class PlayerController {
 	private float dx;
@@ -155,5 +156,8 @@ public class PlayerController {
     	toggleFirstPerson = !toggleFirstPerson;
     	playerObject.show(!toggleFirstPerson);
     	
+    }
+    public void num2press(){
+    	WorldLighting.toggleTorch();
     }
 }

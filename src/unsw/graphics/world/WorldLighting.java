@@ -17,7 +17,7 @@ public class WorldLighting {
 	private static final Point3D default_point = new Point3D(0,0,1);
 	private static final Point3D default_dir = new Point3D(0,0,1);
 	private static final Color default_intensity = Color.white;
-	
+	private static final Color darkness = Color.BLACK;
 	
 	private Shader shader;
 	
@@ -29,11 +29,13 @@ public class WorldLighting {
 	//lighting variables
 	private Point3D lightVec = default_dir;
 	private Point3D lightPos = default_point;
-	private Point3D cameraDir = default_point;
 	
 	private Color sunLightIntensity = default_intensity;
 	private Color lightIntensity = default_intensity;
 	private Color AmbientIntensity = default_intensity;
+	
+	private static boolean torchOn;
+
 	
 	/**
 	 * Constructor for the world lighting class
@@ -45,6 +47,8 @@ public class WorldLighting {
 			fragmentShader = "shaders/fragment_phong_sun.glsl";
 		}
 		shader = null;
+		
+		torchOn = false;
 	}
 	
 	
@@ -67,9 +71,8 @@ public class WorldLighting {
         // Set the lighting properties
         Shader.setPoint3D(gl, "lightVec", lightVec);
         Shader.setPoint3D(gl, "lightPos", lightPos);
-        Shader.setPoint3D(gl, "cameraDir", cameraDir);
         Shader.setColor(gl, "ambientIntensity", AmbientIntensity);
-        Shader.setColor(gl, "lightIntensity", lightIntensity);
+        Shader.setColor(gl, "lightIntensity", ((torchOn) ? lightIntensity: darkness));
         Shader.setColor(gl, "sunLightIntensity", sunLightIntensity);
         
 	}
@@ -99,7 +102,13 @@ public class WorldLighting {
 	 */
 	public void updateSunlightLighting(GL3 gl, Point3D dir){	
 		float intensity = dir.asHomogenous().trim().dotp(new Vector3(0,1,0));
+		float intensity1 =  dir.asHomogenous().trim().dotp(new Vector3(0.5f,0f,0));
+		float intensity2 =  dir.asHomogenous().trim().dotp(new Vector3(-0.5f,0f,0));
+		if(intensity1 < 0) intensity1 = 0;
+		if(intensity2 < 0) intensity2 = 0;
 	    if(intensity < 0) intensity = 0.f;
+	    intensity = (intensity1 + intensity2 + intensity);
+	    if(intensity > 1) intensity = 1;
 		this.setSunLightInt(new Color(intensity, intensity, intensity));
 
 		this.setLightVector(dir);
@@ -121,13 +130,9 @@ public class WorldLighting {
 	public void updateLightPos(Point3D position) {
 		this.setLightPos(position);
 	}
-	/*
-	public void giveCameraDirection(SceneObject3D camera){
-		SceneObject3D off = new SceneObject3D(camera);
-		off.translate(-1, 0, 0);
-		cameraDir = off.getGlobalPosition();
-		off.destroy();
-		
+	
+	public static void toggleTorch(){
+		torchOn = !torchOn;
 	}
-	*/
+
 }

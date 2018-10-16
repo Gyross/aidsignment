@@ -19,6 +19,7 @@ import unsw.graphics.geometry.TriangleMesh;
 import unsw.graphics.scene.MathUtil;
 import unsw.graphics.scene3D.MeshSceneObject;
 import unsw.graphics.scene3D.SceneObject3D;
+import unsw.graphics.world.helper.RoadCreationHelper;
 import unsw.graphics.world.meshes.PlayerMeshGenerator;
 import unsw.graphics.world.meshes.TerrainMeshGenerator;
 import unsw.graphics.world.meshes.TreeMeshGenerator;
@@ -43,6 +44,7 @@ public class Terrain {
     private TriangleMesh treeMesh;
     private TriangleMesh terrainMesh;
     private TriangleMesh playerMesh;
+    private ArrayList<TriangleMesh> roadMeshes;
     
 
     /**
@@ -58,6 +60,8 @@ public class Terrain {
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
         this.sunlight = sunlight;
+        
+        roadMeshes = new ArrayList<TriangleMesh>();
               
     }
 
@@ -224,7 +228,8 @@ public class Terrain {
      */
     public void addRoad(float width, List<Point2D> spine) {
         Road road = new Road(width, spine);
-        roads.add(road);        
+        roads.add(road);
+        roadMeshes.add(RoadCreationHelper.generateRoadMesh(road, this));
     }
     
     
@@ -303,8 +308,9 @@ public class Terrain {
     }
     
     public void addRoads(SceneObject3D terrain){
-    	for(Road r : roads){
-    		RoadSceneObject robj = new RoadSceneObject(r, this, terrain);
+    	for(int i = 0; i<roads.size(); i++){
+    		RoadSceneObject robj = new RoadSceneObject(roadMeshes.get(i), roads.get(i), this, terrain);
+    		robj.setColor(new Color(0.2f, 0.2f, 0.2f));
     	}
     }
     
@@ -330,6 +336,9 @@ public class Terrain {
         treeMesh.init(gl);
         terrainMesh.init(gl);
         playerMesh.init(gl);
+        for(TriangleMesh tm: roadMeshes){
+        	tm.init(gl);
+        }
         
         
     }
