@@ -9,6 +9,10 @@ uniform mat4 view_matrix;
 uniform vec3 lightVec;
 uniform vec3 lightPos;
 
+//torch params
+uniform float cutOff;
+uniform float torchAttenuation;
+
 uniform vec3 lightIntensity;
 uniform vec3 sunLightIntensity;
 uniform vec3 ambientIntensity;
@@ -64,7 +68,10 @@ void main()
 	vec3 intensity2 = diffuse_light + specular_light;
 
 	intensity2 = intensity2 * min(1, 100/( pow(dot(s,s),1) ));
-	intensity2 = intensity2 * (2*pow(max(dot(v, vec3(0,0,1)), 0), 10) + 0.2);
+	intensity2 = intensity2 * (2*pow(max(dot(v, vec3(0,0,1)), 0), torchAttenuation) + 0.2);
+	if(dot(v, vec3(0,0,1)) < cutOff){
+		intensity2 = intensity2*0;
+	}
 
 	vec3 intensity = min(intensity1 + intensity2, 1);
 

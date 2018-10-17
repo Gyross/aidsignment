@@ -102,15 +102,15 @@ public class World extends Application3D implements MouseListener, KeyListener{
         MeshSceneObject playerObj = new MeshSceneObject(
         		terrain.getPlayerMesh(), playerObject);
         
-        playerObj.setColor(Color.blue);  
+        playerObj.setColor(Color.white);  
         playerObj.scale(3);
         
         
         MeshSceneObject skyBox = new MeshSceneObject(
         		WorldTestObjects.genSkyBox(gl, 80, 80, 160),scene.getRoot());
-        skyBox.setColor(new Color(0.4f, 0.4f, 1));
+        skyBox.setColor(new Color(0.7f, 0.8f, 1));
         skyBox.setAmbientColor(new Color(0.3f, 0.3f, 0.4f));
-        skyBox.setDiffuseColor(new Color(0.2f, 0.6f, 0.8f));
+        skyBox.setDiffuseColor(new Color(0.7f, 0.7f, 0.8f));
         skyBox.setSpecularColor(new Color(0, 0, 0));
         skyBox.setParent(cameraHolderOuter);
         
@@ -149,7 +149,9 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		));
 		
 		//update sunlight
-		terrain.rotateSunlight(0.1f);
+		//terrain.rotateSunlight(0.1f);
+		terrain.rotateSunlight(0.5f);
+
 
 		//update positional lighting
 		lighting.updateLightPos(camera.getGlobalPosition());

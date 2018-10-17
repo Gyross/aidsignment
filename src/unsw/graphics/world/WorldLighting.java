@@ -30,6 +30,9 @@ public class WorldLighting {
 	private Point3D lightVec = default_dir;
 	private Point3D lightPos = default_point;
 	
+	private float cutOff = 0.8f;
+	private float torchAttenuation = 20;
+	
 	private Color sunLightIntensity = default_intensity;
 	private Color lightIntensity = default_intensity;
 	private Color AmbientIntensity = default_intensity;
@@ -75,6 +78,10 @@ public class WorldLighting {
         Shader.setColor(gl, "lightIntensity", ((torchOn) ? lightIntensity: darkness));
         Shader.setColor(gl, "sunLightIntensity", sunLightIntensity);
         
+        Shader.setFloat(gl, "cutOff", cutOff);
+        Shader.setFloat(gl, "torchAttenuation", torchAttenuation);
+        
+        
 	}
 	
 	//property settersq
@@ -93,6 +100,12 @@ public class WorldLighting {
 	public void setSunLightInt(Color c){
 		sunLightIntensity = c;
 	}
+	public void setTorchAtten(float f){
+		torchAttenuation = f;
+	}
+	public void setTorchCutOff(float f){
+		cutOff = f;
+	}
 	
 	/**
 	 * updates the sunlight lighting
@@ -101,16 +114,37 @@ public class WorldLighting {
 	 * @param dir
 	 */
 	public void updateSunlightLighting(GL3 gl, Point3D dir){	
-		float intensity = dir.asHomogenous().trim().dotp(new Vector3(0,1,0));
-		float intensity1 =  dir.asHomogenous().trim().dotp(new Vector3(0.5f,0f,0));
-		float intensity2 =  dir.asHomogenous().trim().dotp(new Vector3(-0.5f,0f,0));
-		if(intensity1 < 0) intensity1 = 0;
-		if(intensity2 < 0) intensity2 = 0;
-	    if(intensity < 0) intensity = 0.f;
-	    intensity = (intensity1 + intensity2 + intensity);
-	    if(intensity > 1) intensity = 1;
-		this.setSunLightInt(new Color(intensity, intensity, intensity));
-
+		Vector3 v = dir.asHomogenous().trim();
+		float factor = (1 + v.dotp(new Vector3(1,0,0)))/2;
+		float factor2 = (1 + v.dotp(new Vector3(0,1,0)))/2;
+		float factor3  = v.dotp(new Vector3(0,1,0)) > 0 ? v.dotp(new Vector3(0,1,0)):0;
+		float intensity = (float) Math.pow(factor2, 2/5);
+		
+	    
+	    Color t1 = new Color(0.3f, 0.3f, 1f);
+	    Color t2 = new Color(1f, 1f, 1f);
+	    Color t3 = new Color(1f, 13/16f, 0f);
+	    
+	    
+	    /*
+	    float t1Sig = intensity*(v.dotp(new Vector3(1,0,0))/(2*256);
+	    float t2Sig = intensity*v.dotp(new Vector3(0,1,0))/(2*256);
+	    float t3Sig = intensity*v.dotp(new Vector3(-1,0,0))/(2*256);
+	      */
+	    float t1Sig = (1-factor3)*factor*intensity/256;
+	    float t2Sig = factor3*intensity/256;
+	    float t3Sig = (1-factor3)*(1-factor)*intensity/256;
+	    
+	    if(t1Sig < 0) t1Sig = 0;
+	    if(t2Sig < 0) t2Sig = 0;
+	    if(t3Sig < 0) t3Sig = 0;
+	    Color sunlightColor = new Color(
+	    		t1.getRed()*t1Sig 	+ t2.getRed()*t2Sig  	+ t3.getRed()*t3Sig,
+	    		t1.getGreen()*t1Sig + t2.getGreen()*t2Sig  	+ t3.getGreen()*t3Sig,
+	    		t1.getBlue()*t1Sig 	+ t2.getBlue()*t2Sig  	+ t3.getBlue()*t3Sig);
+	  
+	    
+		this.setSunLightInt(sunlightColor);
 		this.setLightVector(dir);
 	    this.updateWorldLighting(gl);
 	    	

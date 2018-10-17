@@ -19,6 +19,15 @@ public class RoadSceneObject extends MeshSceneObject{
 		this.road = road;
 		this.terrain = t;
 	}
+	
+	@Override
+	public void draw(GL3 gl, CoordFrame3D c){
+		gl.glEnable(gl.GL_POLYGON_OFFSET_FILL);
+		gl.glPolygonOffset(-1, -1);
+		super.draw(gl, c);
+		gl.glPolygonOffset(0, 0);
+		gl.glDisable(gl.GL_POLYGON_OFFSET_FILL);
+	}
 
 	
 }

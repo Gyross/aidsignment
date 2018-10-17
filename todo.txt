@@ -1,9 +1,6 @@
 To do for full marks
 
 - texture everything
-- fix road z-fighting for viewing at large distances
-- make sure torchlight has appropriate cutoff and attenuation parameters
-- change sunlight colour based on its rotation (time of day)
 
 
 To do for marks beyond full marks (bonus marks for marks lost in quizzes)
