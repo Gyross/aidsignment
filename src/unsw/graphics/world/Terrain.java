@@ -40,6 +40,7 @@ public class Terrain {
     private List<Tree> trees;
     private List<Road> roads;
     private Vector3 sunlight;
+    private Vector3 sunlightAxis;
     
     
     private TriangleMesh treeMesh;
@@ -64,6 +65,9 @@ public class Terrain {
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
         this.sunlight = sunlight;
+        
+        this.sunlightAxis = this.setSunlightAxis();
+      
         
         roadMeshes = new ArrayList<TriangleMesh>();
               
@@ -322,13 +326,57 @@ public class Terrain {
     	}
     }
     
+    public Vector3 getSunlightAxis(){
+    	return this.sunlightAxis;	
+    }
+    
+    
+    private Vector3 setSunlightAxis(){
+    	//
+        float x = sunlight.getX();
+        float y = sunlight.getY();
+        float z = sunlight.getZ();
+        
+        if(x == 0 && z == 0){
+        	if(y == 0) return new Vector3(0,1,0);
+        	
+        	return new Vector3(0,0,1);
+        }
+        else if(x == 0){
+        	return new Vector3(1,0,0);
+        }
+        else if(z == 0){
+        	return new Vector3(0,0,1);
+        }
+        else{
+        	float theta = (float) Math.atan(z/x);
+        	theta = Math.abs(theta*180/(float) Math.PI);
+        	if (theta < 45){
+        		//vector closer to x-axis
+        		return new Vector3(0,0,1);
+        	}
+        	else{
+        		return new Vector3(1,0,0);
+        	}
+        }
+    	
+    }
+    
+    
     /**
      * Method that rotates the sunlight updating the value stored
      * @param gl
      * @param deg
      */
 	public void rotateSunlight(float deg){
-	    	Point3D sunvec = (Matrix4.rotationZ(deg).multiply(this.getSunlight().extend())).asPoint3D();
+		Point3D sunvec;
+			if(this.sunlightAxis.getX() == 1){
+				sunvec = (Matrix4.rotationX(deg).multiply(this.getSunlight().extend())).asPoint3D();
+			}
+			else{
+				sunvec = (Matrix4.rotationZ(deg).multiply(this.getSunlight().extend())).asPoint3D();
+			}
+	    	
 	    	Vector3 s = sunvec.asHomogenous().trim();
 	    	s = s.normalize();
 	    	this.setSunlightDir(s.getX(), s.getY(), s.getZ());

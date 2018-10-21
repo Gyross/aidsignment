@@ -31,7 +31,7 @@ public class WorldLighting {
 	private Point3D lightPos = default_point;
 	
 	private float cutOff = 0.8f;
-	private float torchDistanceAttenuation = 1.5f;
+	private float torchDistanceAttenuation = 1.2f;
 	private float torchAngularAttenuation = 20;
 	
 	private Color sunLightIntensity = default_intensity;
@@ -119,16 +119,19 @@ public class WorldLighting {
 	 * @param gl
 	 * @param dir
 	 */
-	public void updateSunlightLighting(GL3 gl, Point3D dir){	
+	public void updateSunlightLighting(GL3 gl, Point3D dir, Vector3 axis){
+		Vector3 r = Matrix4.rotationY(-90).multiply(axis.extend()).trim();
 		Vector3 v = dir.asHomogenous().trim();
-		float factor = (1 + v.dotp(new Vector3(1,0,0)))/2;
+		float factor = (1 + v.dotp(r))/2;
 		float factor2 = (1 + v.dotp(new Vector3(0,1,0)))/2;
 		float factor3  = v.dotp(new Vector3(0,1,0)) > 0 ? v.dotp(new Vector3(0,1,0)):0;
 		float intensity = (float) Math.pow(factor2, 2/5);
 		
-	    
-	    Color t1 = new Color(0.3f, 0.3f, 1f);
+	    //sunset
+	    Color t1 = new Color(1f, 11/16f, 0f);
+	    //midday
 	    Color t2 = new Color(1f, 1f, 1f);
+	    //sunrise
 	    Color t3 = new Color(1f, 13/16f, 0f);
 	    
 	    
@@ -161,9 +164,9 @@ public class WorldLighting {
      */
     public void initLightingColor(Terrain terrain){	
     	this.setLightVector(terrain.getSunlight().asPoint3D());
-    	this.setAmbientInt(new Color(0.7f, 0.7f, 0.7f));
+    	this.setAmbientInt(new Color(0.4f, 0.4f, 0.4f));
     	this.setSunLightInt(Color.WHITE);
-    	this.setLightInt(Color.WHITE);	
+    	this.setLightInt(new Color(0.9f, 0.9f, 0.9f));	
     }
 
 

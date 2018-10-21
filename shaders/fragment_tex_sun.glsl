@@ -70,7 +70,7 @@ void main()
     else
         specular_light = vec3(0);
 
-	float torchMultiplier = min(1, 100/( pow(dot(s,s),torchDistanceAttenuation) ));
+	float torchMultiplier = min(0.75, 100/( pow(dot(s,s),torchDistanceAttenuation) ));
 	torchMultiplier = torchMultiplier * (2*pow(max(dot(s_light, vec3(0,0,1)), 0), torchAngularAttenuation) + 0.2);
 	if(dot(s_light, vec3(0,0,1)) < cutOff){
 		torchMultiplier = 0;
@@ -80,10 +80,10 @@ void main()
 	diffuse_light  = torchMultiplier*diffuse_light;
 
 	if ( useTexture != 0 ) {
-    	outputColor = vec4(ambient + diffuse_light + diffuse_sun, 1)*input_color*texture(tex, texCoordFrag)
-                  	+ vec4(specular_light + specular_sun, 1);
+    	outputColor = vec4(ambient + max(diffuse_light,diffuse_sun), 1)*input_color*texture(tex, texCoordFrag)
+                  	+ vec4(max(specular_light,specular_sun), 1);
     } else {
-    	outputColor = vec4(ambient + diffuse_light + diffuse_sun, 1)*input_color
-                  	+ vec4(specular_light + specular_sun, 1);
+    	outputColor = vec4(ambient + max(diffuse_light,diffuse_sun), 1)*input_color
+                  	+ vec4(max(specular_light,specular_sun), 1);
     }
 }

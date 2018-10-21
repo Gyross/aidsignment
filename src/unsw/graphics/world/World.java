@@ -63,6 +63,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
         
     private float perspectiveDistance = 200;
     
+    private float sunlight_default_rate = 0.4f;
+    private float sunlight_rate = sunlight_default_rate;
     
 
     
@@ -87,6 +89,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
         		cameraHolderOuter, playerObject);
         
         //create the scene
+        
     }
    
     
@@ -164,13 +167,12 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		));
 		
 		//update sunlight
-		//terrain.rotateSunlight(0.1f);
-		terrain.rotateSunlight(0.5f);
+		terrain.rotateSunlight(sunlight_rate);
 
 
 		//update positional lighting
 		lighting.updateLightPos(camera.getGlobalPosition());
-		lighting.updateSunlightLighting(gl, terrain.getSunlight().asPoint3D());
+		lighting.updateSunlightLighting(gl, terrain.getSunlight().asPoint3D(), terrain.getSunlightAxis());
 		
 		
 		//scene.draw(gl, camera.getGlobalPosition(), perspectiveDistance);    
@@ -266,6 +268,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
 		case KeyEvent.VK_1: pc.num1press(); break; 
 		case KeyEvent.VK_2: pc.num2press(); break; 
 		case KeyEvent.VK_3: terrain.rotateSunlight(45); break;
+		//toggle sunlight
+		case KeyEvent.VK_4: sunlight_rate = (sunlight_rate == 0) ? sunlight_default_rate: 0; break;
 		
 		//window quitting function
 		case KeyEvent.VK_Q: this.getWindow().destroy();

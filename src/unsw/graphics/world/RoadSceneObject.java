@@ -1,5 +1,7 @@
 package unsw.graphics.world;
 
+import java.awt.Color;
+
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame3D;
@@ -18,6 +20,7 @@ public class RoadSceneObject extends MeshSceneObject{
 		super(tm, s);
 		this.road = road;
 		this.terrain = t;
+		this.setSpecularColor(new Color(0.2f, 0.2f, 0.2f));
 	}
 	
 	@Override
