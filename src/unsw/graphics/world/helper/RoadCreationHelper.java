@@ -134,6 +134,7 @@ public class RoadCreationHelper {
 		//mesh lists
 		ArrayList<Point3D> vertices = new ArrayList<Point3D>();
 		ArrayList<Integer> indicies = new ArrayList<Integer>();
+		ArrayList<Point2D> texCoords = new ArrayList<Point2D>();
 		
 		//row lists
 		ArrayList<Point2D> frontRow;
@@ -150,6 +151,8 @@ public class RoadCreationHelper {
 		
 		//add all vertices in the front row to the vertex list
 		vertices.addAll(frontRow3D);
+		
+		texCoords.addAll(frontRow);
 
 		
 		//for every proceeeding row
@@ -166,6 +169,8 @@ public class RoadCreationHelper {
         	
         	//add all vertices
         	vertices.addAll(frontRow3D);
+        	
+        	texCoords.addAll(frontRow);
 
         	
         	//generate an indice list
@@ -184,7 +189,7 @@ public class RoadCreationHelper {
         	}
 
     	}
-    	TriangleMesh tm = new TriangleMesh(vertices, indicies, true);    	
+    	TriangleMesh tm = new TriangleMesh(vertices, indicies, true, texCoords);    	
     	return tm;
     	
 	}
