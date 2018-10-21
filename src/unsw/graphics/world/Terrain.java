@@ -243,9 +243,10 @@ public class Terrain {
      */
     private void generateTerrainMesh(){
     	ArrayList<Point3D> vertices = TerrainMeshGenerator.generateVertexList(width, depth, altitudes);
+    	ArrayList<Point2D> texCoords = TerrainMeshGenerator.generateTextureCoordinateList(width, depth);
     	ArrayList<Integer> indicies = TerrainMeshGenerator.generateIndiciesList(width, depth);
     	ArrayList<Vector3> normals = TerrainMeshGenerator.generateNormalList(indicies, vertices);
-    	terrainMesh = new TriangleMesh(vertices, indicies, true);
+    	terrainMesh = new TriangleMesh(vertices, indicies, true, texCoords);
     	//terrainMesh = new TriangleMesh(vertices, true);
 
     }

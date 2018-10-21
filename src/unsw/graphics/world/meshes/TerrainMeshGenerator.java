@@ -3,6 +3,7 @@ package unsw.graphics.world.meshes;
 import java.util.ArrayList;
 
 import unsw.graphics.Vector3;
+import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Point3D;
 import unsw.graphics.geometry.TriangleMesh;
 
@@ -66,6 +67,38 @@ public class TerrainMeshGenerator {
 			vertices.add(p);
 		}
 		return vertices;
+	};
+	
+	/**
+	 * Method to generate the texture coordinates for vertices in the mesh
+	 * @param width
+	 * @param height
+	 * @param altitudes
+	 * @return - the list of vertices
+	 */
+	public static ArrayList<Point2D> generateTextureCoordinateList(int width, int height){
+		
+		//list to contain all vertices in the desired order 
+		ArrayList<Point2D> texCoordinates = new ArrayList<Point2D>();
+		
+		//iteration through all altitudes to generate the terrain vertices
+		for (int i = 0; i<width*height; i++){
+			Point2D p;
+			
+			if ( i % 4 == 0 ) {
+				p = new Point2D(0, 0);
+			} else if ( i % 4 == 1 ) {
+				p = new Point2D(0, 1);
+			} else if ( i % 4 == 2 ) {
+				p = new Point2D(1, 1);
+			} else {
+				p = new Point2D(1, 0); 
+			}
+			
+			//add the point to the list
+			texCoordinates.add(p);
+		}
+		return texCoordinates;
 	};
 	
 	/**
