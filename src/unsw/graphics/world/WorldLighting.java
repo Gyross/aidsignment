@@ -46,8 +46,8 @@ public class WorldLighting {
 	 */
 	public WorldLighting(boolean use_sun){
 		if (use_sun){
-			vertexShader = "shaders/vertex_phong_sun.glsl";
-			fragmentShader = "shaders/fragment_phong_sun.glsl";
+			vertexShader = "shaders/vertex_tex_sun.glsl";
+			fragmentShader = "shaders/fragment_tex_sun.glsl";
 		}
 		shader = null;
 		
