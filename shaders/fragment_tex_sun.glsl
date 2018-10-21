@@ -9,6 +9,8 @@ uniform mat4 view_matrix;
 uniform vec3 lightVec;
 uniform vec3 lightPos;
 
+uniform int useTexture;
+
 //torch params
 uniform float cutOff;
 uniform float torchAttenuation;
@@ -76,6 +78,11 @@ void main()
 	specular_light = torchMultiplier*specular_light;
 	diffuse_light  = torchMultiplier*diffuse_light;
 
-    outputColor = vec4(ambient + diffuse_light + diffuse_sun, 1)*input_color*texture(tex, texCoordFrag)
-                  + vec4(specular_light + specular_sun, 1);
+	if ( useTexture != 0 ) {
+    	outputColor = vec4(ambient + diffuse_light + diffuse_sun, 1)*input_color*texture(tex, texCoordFrag)
+                  	+ vec4(specular_light + specular_sun, 1);
+    } else {
+    	outputColor = vec4(ambient + diffuse_light + diffuse_sun, 1)*input_color
+                  	+ vec4(specular_light + specular_sun, 1);
+    }
 }

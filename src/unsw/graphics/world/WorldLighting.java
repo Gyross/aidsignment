@@ -62,6 +62,7 @@ public class WorldLighting {
 	public void initLighting(GL3 gl){
 		shader = new Shader(gl, vertexShader, fragmentShader);
 		shader.use(gl);
+		Shader.setInt(gl, "useTexture", 0);
 		updateWorldLighting(gl);
 		
 	}

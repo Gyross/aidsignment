@@ -1,6 +1,7 @@
 package unsw.graphics.scene3D;
 
 import java.awt.Color;
+import java.nio.ByteBuffer;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
@@ -66,10 +67,11 @@ public class MeshSceneObject extends SceneObject3D{
 		// If we aren't using a texture, set the color
 		// otherwise set the texture
 		if ( surfaceTexture == null ) {
+			Shader.setInt(gl, "useTexture", 0);
 			Shader.setPenColor(gl, surfaceColor);
 		} else {
 			Shader.setInt(gl, "tex", 0);
-            
+			Shader.setInt(gl, "useTexture", 1);
             gl.glActiveTexture(GL.GL_TEXTURE0);
             gl.glBindTexture(GL.GL_TEXTURE_2D, surfaceTexture.getId());
             
@@ -82,5 +84,9 @@ public class MeshSceneObject extends SceneObject3D{
         Shader.setColor(gl, "specularCoeff", meshSpecularCoeff);
         Shader.setFloat(gl, "phongExp", meshPhongExp);
 		mesh.draw(gl, frame);
+		
+		// Switch back to default texture
 	}
+	
+	
 }
