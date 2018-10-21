@@ -13,6 +13,7 @@ import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
+import unsw.graphics.Texture;
 import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Point3D;
 import unsw.graphics.geometry.TriangleMesh;
@@ -45,6 +46,9 @@ public class Terrain {
     private TriangleMesh terrainMesh;
     private TriangleMesh playerMesh;
     private ArrayList<TriangleMesh> roadMeshes;
+    
+    private Texture treeTexture;
+    private Texture roadTexture;
     
 
     /**
@@ -297,6 +301,8 @@ public class Terrain {
     		TreeSceneObject tobj = new TreeSceneObject(getTreeMesh(), terrain);
     		terrainPlace(tobj, t.getPosition().getX(), t.getPosition().getZ());
     		
+    		tobj.setTexture(treeTexture);
+    		
     		tobj.setAmbientColor(new Color(0.05f, 0.05f, 0.05f));
     		tobj.setDiffuseColor(new Color(0.6f, 0.6f, 0.6f));
     		tobj.setSpecularColor(new Color(0.01f, 0.01f, 0.01f));
@@ -311,6 +317,7 @@ public class Terrain {
     public void addRoads(SceneObject3D terrain){
     	for(int i = 0; i<roads.size(); i++){
     		RoadSceneObject robj = new RoadSceneObject(roadMeshes.get(i), roads.get(i), this, terrain);
+    		robj.setTexture(roadTexture);
     		robj.setColor(new Color(0.2f, 0.2f, 0.2f));
     	}
     }
@@ -341,6 +348,8 @@ public class Terrain {
         	tm.init(gl);
         }
         
-        
+        // Load textures
+        roadTexture = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
+        treeTexture = new Texture(gl, "res/textures/tree.jpg", "jpg", false);
     }
 }

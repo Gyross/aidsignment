@@ -2,6 +2,7 @@ package unsw.graphics.world;
 
 import java.awt.Color;
 
+import unsw.graphics.Texture;
 import unsw.graphics.geometry.TriangleMesh;
 import unsw.graphics.scene3D.MeshSceneObject;
 import unsw.graphics.scene3D.SceneObject3D;
@@ -21,6 +22,8 @@ public class TreeSceneObject extends SceneObject3D {
 	
 	//shader colouring parameters setters
 		public void setColor(Color c){ treeBase.setColor(c); }
+		
+		public void setTexture(Texture t) { treeBase.setTexture(t); }
 		
 		public void setAmbientColor(Color c){ treeBase.setAmbientColor(c); }
 		public void setDiffuseColor(Color c){ treeBase.setDiffuseColor(c); }
