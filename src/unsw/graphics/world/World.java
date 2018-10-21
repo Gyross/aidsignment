@@ -14,6 +14,7 @@ import unsw.graphics.Application3D;
 import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
+import unsw.graphics.Texture;
 import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Point3D;
 import unsw.graphics.geometry.TriangleFan3D;
@@ -41,6 +42,10 @@ public class World extends Application3D implements MouseListener, KeyListener{
 	//store the terrain
     private Terrain terrain;
     private WorldLighting lighting;
+    
+    private Texture grassTexture;
+    private Texture rockTexture;
+    private Texture marbleTexture;
     
     
     //mouse position parameter
@@ -85,11 +90,18 @@ public class World extends Application3D implements MouseListener, KeyListener{
    
     
     private void createScene(GL3 gl){
+        // Load textures
+        grassTexture  = new Texture(gl, "res/textures/grass.bmp", "bmp", false);
+        rockTexture   = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
+        marbleTexture = new Texture(gl, "res/textures/BrightPurpleMarble.png", "png", false);
+        
+        
         //add terrain object
         MeshSceneObject terrainObj = new MeshSceneObject(
         		terrain.getTerrainMesh(), scene.getRoot());
         
-		terrainObj.setColor(Color.GREEN);  
+		// terrainObj.setColor(Color.GREEN); 
+        terrainObj.setTexture(grassTexture);
 		terrainObj.setAmbientColor(new Color(0.1f, 0.1f, 0.1f));
 		terrainObj.setDiffuseColor(new Color(0.8f, 0.8f, 0.8f));
 		terrainObj.setSpecularColor(new Color(0.1f, 0.1f, 0.1f));
@@ -102,7 +114,8 @@ public class World extends Application3D implements MouseListener, KeyListener{
         MeshSceneObject playerObj = new MeshSceneObject(
         		terrain.getPlayerMesh(), playerObject);
         
-        playerObj.setColor(Color.white);  
+        // playerObj.setColor(Color.white);  
+        playerObj.setTexture(marbleTexture);
         playerObj.scale(3);
         
         
