@@ -67,16 +67,15 @@ void main()
     else
         specular_light = vec3(0);
 
-    vec3 intensity1 = ambient + diffuse_sun + specular_sun;
-	vec3 intensity2 = diffuse_light + specular_light;
-
-	intensity2 = intensity2 * min(1, 100/( pow(dot(s,s),1) ));
-	intensity2 = intensity2 * (2*pow(max(dot(v, vec3(0,0,1)), 0), torchAttenuation) + 0.2);
+	float torchMultiplier = min(1, 100/( pow(dot(s,s),1) ));
+	torchMultiplier = torchMultiplier * (2*pow(max(dot(v, vec3(0,0,1)), 0), torchAttenuation) + 0.2);
 	if(dot(v, vec3(0,0,1)) < cutOff){
-		intensity2 = intensity2*0;
+		torchMultiplier = 0;
 	}
+	
+	specular_light = torchMultiplier*specular_light;
+	diffuse_light  = torchMultiplier*diffuse_light;
 
-	vec3 intensity = min(intensity1 + intensity2, 1);
-
-    outputColor = vec4(intensity,1)*input_color*texture(tex, texCoordFrag);
+    outputColor = vec4(ambient + diffuse_light + diffuse_sun, 1)*input_color*texture(tex, texCoordFrag)
+                  + vec4(specular_light + specular_sun, 1);
 }
