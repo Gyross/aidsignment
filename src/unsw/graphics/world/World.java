@@ -46,6 +46,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
     private Texture grassTexture;
     private Texture rockTexture;
     private Texture marbleTexture;
+    private Texture snowTexture;
     
     
     //mouse position parameter
@@ -94,6 +95,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
         grassTexture  = new Texture(gl, "res/textures/grass.bmp", "bmp", false);
         rockTexture   = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
         marbleTexture = new Texture(gl, "res/textures/BrightPurpleMarble.png", "png", false);
+        snowTexture   = new Texture(gl, "res/textures/snow.jpg", "jpg", false);
         
         
         //add terrain object
@@ -101,7 +103,7 @@ public class World extends Application3D implements MouseListener, KeyListener{
         		terrain.getTerrainMesh(), scene.getRoot());
         
 		// terrainObj.setColor(Color.GREEN); 
-        terrainObj.setTexture(grassTexture);
+        terrainObj.setTexture(snowTexture);
 		terrainObj.setAmbientColor(new Color(0.1f, 0.1f, 0.1f));
 		terrainObj.setDiffuseColor(new Color(0.8f, 0.8f, 0.8f));
 		terrainObj.setSpecularColor(new Color(0.1f, 0.1f, 0.1f));
