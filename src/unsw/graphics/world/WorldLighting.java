@@ -31,7 +31,8 @@ public class WorldLighting {
 	private Point3D lightPos = default_point;
 	
 	private float cutOff = 0.8f;
-	private float torchAttenuation = 20;
+	private float torchDistanceAttenuation = 1.5f;
+	private float torchAngularAttenuation = 20;
 	
 	private Color sunLightIntensity = default_intensity;
 	private Color lightIntensity = default_intensity;
@@ -80,7 +81,8 @@ public class WorldLighting {
         Shader.setColor(gl, "sunLightIntensity", sunLightIntensity);
         
         Shader.setFloat(gl, "cutOff", cutOff);
-        Shader.setFloat(gl, "torchAttenuation", torchAttenuation);
+        Shader.setFloat(gl, "torchAngularAttenuation", torchAngularAttenuation);
+        Shader.setFloat(gl, "torchDistanceAttenuation", torchDistanceAttenuation);
         
         
 	}
@@ -101,8 +103,11 @@ public class WorldLighting {
 	public void setSunLightInt(Color c){
 		sunLightIntensity = c;
 	}
-	public void setTorchAtten(float f){
-		torchAttenuation = f;
+	public void setTorchAngluarAtten(float f){
+		torchAngularAttenuation = f;
+	}
+	public void setTorchDistAtten(float f){
+		torchDistanceAttenuation = f;
 	}
 	public void setTorchCutOff(float f){
 		cutOff = f;

@@ -13,7 +13,8 @@ uniform int useTexture;
 
 //torch params
 uniform float cutOff;
-uniform float torchAttenuation;
+uniform float torchDistanceAttenuation;
+uniform float torchAngularAttenuation;
 
 uniform vec3 lightIntensity;
 uniform vec3 sunLightIntensity;
@@ -69,9 +70,9 @@ void main()
     else
         specular_light = vec3(0);
 
-	float torchMultiplier = min(1, 100/( pow(dot(s,s),1) ));
-	torchMultiplier = torchMultiplier * (2*pow(max(dot(v, vec3(0,0,1)), 0), torchAttenuation) + 0.2);
-	if(dot(v, vec3(0,0,1)) < cutOff){
+	float torchMultiplier = min(1, 100/( pow(dot(s,s),torchDistanceAttenuation) ));
+	torchMultiplier = torchMultiplier * (2*pow(max(dot(s_light, vec3(0,0,1)), 0), torchAngularAttenuation) + 0.2);
+	if(dot(s_light, vec3(0,0,1)) < cutOff){
 		torchMultiplier = 0;
 	}
 	
