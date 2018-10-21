@@ -77,23 +77,24 @@ public class TerrainMeshGenerator {
 	 * @return - the list of vertices
 	 */
 	public static ArrayList<Point2D> generateTextureCoordinateList(int width, int height){
+		//prevent trivial error
+		if(height == 0 || width == 0) return null;
 		
 		//list to contain all vertices in the desired order 
 		ArrayList<Point2D> texCoordinates = new ArrayList<Point2D>();
 		
+		int x;
+		int z;
+		
+		
 		//iteration through all altitudes to generate the terrain vertices
 		for (int i = 0; i<width*height; i++){
-			Point2D p;
 			
-			if ( i % 4 == 0 ) {
-				p = new Point2D(0, 0);
-			} else if ( i % 4 == 1 ) {
-				p = new Point2D(0, 1);
-			} else if ( i % 4 == 2 ) {
-				p = new Point2D(1, 1);
-			} else {
-				p = new Point2D(1, 0); 
-			}
+			//compute the x and z values for this vertex index
+			x = i % width;
+			z = (i - x)/height;
+			
+			Point2D p = new Point2D(x,z);
 			
 			//add the point to the list
 			texCoordinates.add(p);
