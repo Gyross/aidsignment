@@ -118,8 +118,7 @@ public class RoadCreationHelper {
     	for(int k = 0; k < r.getWidthSegments(); k++){
     		float x = row.get(k).getX();
     		float z = row.get(k).getY();
-    		float delta = (k == 0 || k == r.getWidthSegments()) ? -0.01f : 0.01f;
-    		float y = t.altitude(x, z) + delta;
+    		float y = t.altitude(x, z);
     		
     		Point3D p = new Point3D(x,y,z);
     		row3D.add(p);
